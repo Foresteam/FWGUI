@@ -12,6 +12,16 @@ const node_functions = {};
 const fwgui = {
     Waiting: class Waiting {},
     waitingForReply: {},
+    /**
+     * Start Express server, that will be backend
+     * @param {string} startPage Start page, e.g. index.html
+     * @param {string} webdir Directory where frontend resides
+     * @param {boolean} closeOnExit
+     * @param {number} serverPort
+     * @param {number} clientPort Useful when your HTTP and Websocket server is not the same thing. See my F0Talk repo for example of usage
+     * @param {string} chromePath Chromium should be found automatically, but if not, you can pass the path here
+     * @returns Chromium instance or false
+     */
     async start({ startPage = '', webdir = 'wgui', closeOnExit = true, serverPort = 8080, clientPort, chromePath }) {
         if (!webdir)
             return false;
@@ -34,7 +44,12 @@ const fwgui = {
         );
         return success;
     },
-    async expose(funcname, func) {
+    /**
+     * Expose backend function to frontend
+     * @param {function|string} funcname JS function or frontend alias
+     * @param {function} func JS function, if alias was passed before
+     */
+    async expose(funcname, func = null) {
         if (!funcname)
             return;
         if (!func) {
@@ -49,6 +64,9 @@ const fwgui = {
             expose: true
         }));
     },
+    /**
+     * Tell the frontend that all functions are defined
+     */
     async endExpose() {
         while (!this.ws || !fwgui.endInit)
             await promisify(setTimeout)(50);
@@ -56,6 +74,11 @@ const fwgui = {
             endExpose: true
         }));
     },
+    /**
+     * AKA publish (the frontend is the subscriber)
+     * @param {string} event Function name
+     * @param  {...any} args
+     */
     async emit(event, ...args) {
         if (!this.ws)
             return;
@@ -68,6 +91,7 @@ const fwgui = {
 
 const serve = (dir, serverPort) => new Promise(resolve => {
     app.use(express.static(dir));
+    app.use(express.static('node_modules/fwgui/frontend'));
     app.ws('/', async (ws, rq) => {
         fwgui.ws = ws;
         ws.on('message', msg => {

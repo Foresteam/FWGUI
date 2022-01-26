@@ -4,12 +4,20 @@ var fwgui = {
 	exposed: {},
 	_exposeEnd: false,
 	subscribes: {},
+	/**
+	 * Await this to assure that functions you call exist
+	 */
 	async exposeEnd() {
 		while (!this._exposeEnd)
 			await new Promise(resolve => setTimeout(resolve, 50));
 		await new Promise(resolve => setTimeout(resolve, 150)); // just to be sure...
 	},
-	expose(funcname, func) {
+	/**
+	 * Expose frontend function to backend
+	 * @param {function|string} funcname JS function or backend alias
+	 * @param {function} func JS function, if alias was passed before
+	 */
+	expose(funcname, func = null) {
 		if (!funcname)
 			return;
 		if (!func) {
@@ -20,10 +28,10 @@ var fwgui = {
 		if (this.ws.connected)
 			this.ws.send(JSON.stringify({ expose: true, func: funcname }));
 	},
-	resolve(name) {
-		this[name] = async (...args) => await this.svExec(name, ...args);
+	_resolve(name) {
+		this[name] = async (...args) => await this._svExec(name, ...args);
 	},
-	async svExec(func, ...args) {
+	async _svExec(func, ...args) {
 		let fid = `${Date.now().toString(16)}${Math.random().toString(16)}`;
 		this.ws.send(JSON.stringify({ func, args, fid }));
 		this.waitingForReply[fid] = new fwgui.Waiting();
@@ -34,6 +42,11 @@ var fwgui = {
 		delete this.waitingForReply[fid];
 		return rs;
 	},
+	/**
+	 * Subscribe on an event
+	 * @param {string} eventName 
+	 * @param {function} callback 
+	 */
 	on(eventName, callback) {
 		if (!this.subscribes[eventName])
 			this.subscribes[eventName] = [];
@@ -54,7 +67,7 @@ var fwgui = {
 				console.log(msg);
 				let f = this.exposed[msg.func];
 				if (msg.expose)
-					return this.resolve(msg.func);
+					return this._resolve(msg.func);
 				if ('reply' in msg)
 					return this.waitingForReply[msg.fid] = msg.reply;
 				if (msg.endExpose)
@@ -78,5 +91,3 @@ var fwgui = {
 	}
 };
 fwgui.start();
-fwgui.expose(alert);
-fwgui.expose(function add(...args) { return args.reduce((a, v) => a + v) });

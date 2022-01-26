@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="fwgui_cl.js"></script>
+    <script>
+        (async () => {
+            fwgui.expose('Alert', text => alert(text));
+            fwgui.on('time to print', text => fwgui.SVLog(text));
+            await fwgui.exposeEnd();
+            fwgui.SVLog('Functions are now certainly ready, so we can use them freely');
+        })();
+    </script>
+</head>
+</html>

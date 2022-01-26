@@ -1,14 +1,14 @@
 {
   "name": "fwgui",
-  "version": "1.0.0",
-  "description": "A library for GUI desktop apps. Lightweight electron replacement. Uses Google Chrome.",
+  "version": "1.0.1",
+  "description": "This library is a liteweight React Electron alternative, it's small and easy to use. It uses system installed Chromium as frontend engine, so the distribution won't take much disk space too.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/foresteam/cmd-argparse.git"
+    "url": "git+https://github.com/Foresteam/FWGUI.git"
   },
   "keywords": [
     "electron",
@@ -21,9 +21,9 @@
   "author": "Foresteam",
   "license": "SEE LICENCE IN LICENCE",
   "bugs": {
-    "url": "https://github.com/foresteam/cmd-argparse/issues"
+    "url": "https://github.com/Foresteam/FWGUI/issues"
   },
-  "homepage": "https://github.com/foresteam/cmd-argparse#readme",
+  "homepage": "https://github.com/Foresteam/FWGUI#readme",
   "dependencies": {
     "chrome-launcher": "^0.13.4",
     "express": "^4.17.1",
