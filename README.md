@@ -1,6 +1,8 @@
 # FWGUI
 This library is a liteweight React Electron alternative, it's small and easy to use. It uses system installed Chromium as frontend engine, so the distribution won't take much disk space too.
 
+[Python "version" of this library](https://github.com/ChrisKnott/Eel)
+
 **My project in which i used this library as GUI frontend: [F0Talk](https://github.com/foresteam/F0Talk)**
 ## Installation
 ```sh
