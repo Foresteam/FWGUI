@@ -1,6 +1,6 @@
 {
   "name": "fwgui",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This library is a liteweight React Electron alternative, it's small and easy to use. It uses system installed Chromium as frontend engine, so the distribution won't take much disk space too.",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "gui"
   ],
   "author": "Foresteam",
-  "license": "SEE LICENCE IN LICENCE",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Foresteam/FWGUI/issues"
   },
