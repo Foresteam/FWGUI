@@ -1,5 +1,5 @@
 # FWGUI
-This library is a liteweight React Electron alternative, it's small and easy to use. It uses system installed Chromium as frontend engine, so the distribution won't take much disk space too.
+This library is a liteweight React Electron cross-platform alternative, small and easy to use. It uses system installed Chromium as frontend engine, so the distribution won't take much disk space (while Electron's will). You can pack it with [nexe](https://github.com/nexe/nexe) or whatever ([F0Talk](https://github.com/foresteam/F0Talk) is an example).
 
 [Python "version" of this library](https://github.com/ChrisKnott/Eel)
 
