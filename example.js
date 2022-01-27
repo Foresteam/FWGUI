@@ -1,4 +1,4 @@
-const fwgui = require('fwgui');
+const fwgui = require('fwgui')();
 const path = require('path');
 const RELEASE = true;
 

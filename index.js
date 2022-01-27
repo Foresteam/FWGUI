@@ -9,9 +9,59 @@ require('express-ws')(app);
 
 const node_functions = {};
 
-const fwgui = {
-    Waiting: class Waiting {},
-    waitingForReply: {},
+class FWGUI {
+    static #Waiting = class Waiting {};
+    #waitingForReply = {};
+
+    #serve(dir, serverPort) {
+        return new Promise(resolve => {
+            app.use(express.static(dir));
+            app.use(express.static('node_modules/fwgui/frontend'));
+            app.ws('/', async ws => {
+                this.ws = ws;
+                ws.on('message', msg => {
+                    try {
+                        msg = JSON.parse(msg);
+                        // console.log(msg);
+                        if (msg.endInit) {
+                            this.endInit = true;
+                            resolve();
+                        }
+                        else if (msg.expose) {
+                            this[msg.func] = async (...args) => {
+                                let fid = `${Date.now().toString(16)}${Math.random().toString(16)}`;
+                                console.log(fid);
+                                ws.send(JSON.stringify({ func: msg.func, args, fid }));
+                                this.#waitingForReply[fid] = new FWGUI.#Waiting();
+                                while (this.#waitingForReply[fid] instanceof FWGUI.#Waiting)
+                                    await promisify(setTimeout)(5);
+                                let rs = this.#waitingForReply[fid];
+                                delete this.#waitingForReply[fid];
+                                return rs;
+                            };
+                        }
+                        else if ('reply' in msg)
+                            this.#waitingForReply[msg.fid] = msg.reply;
+                        else
+                            (async () => ws.send(JSON.stringify({
+                                reply: await (node_functions[msg.func])(...msg.args) || null,
+                                fid: msg.fid
+                            })))();
+                    }
+                    catch (e) {
+                        node_functions.error('Serverside error: ' + e.stack);
+                    }
+                });
+                ws.on('close', () => delete this.ws);
+            });
+            let server = app.listen(serverPort);
+            process.addListener('exit', () => server.close());
+            this.expose(function error(...text) { console.log('\x1b[31m', ...text); });
+        })
+    }
+
+    constructor() {}
+
     /**
      * Start Express server, that will be backend
      * @param {string} startPage Start page, e.g. index.html
@@ -27,7 +77,7 @@ const fwgui = {
             return false;
         if (!clientPort)
             clientPort = serverPort;
-        let sv = serve(webdir, serverPort);
+        let sv = this.#serve(webdir, serverPort);
 
         // setting up websocket server and running chrome
         const url = `http://localhost:${clientPort}/` + startPage;
@@ -39,11 +89,9 @@ const fwgui = {
             }
             success = instance;
             return sv;
-        }).catch(() =>
-            console.log('Couldn\'t find Google Chrome. Please, install it properly or set the path manually through "set chrome_path <path>", then restart FTalk.')
-        );
+        });
         return success;
-    },
+    }
     /**
      * Expose backend function to frontend
      * @param {function|string} funcname JS function or frontend alias
@@ -63,17 +111,17 @@ const fwgui = {
             func: funcname,
             expose: true
         }));
-    },
+    }
     /**
      * Tell the frontend that all functions are defined
      */
     async endExpose() {
-        while (!this.ws || !fwgui.endInit)
+        while (!this.ws || !this.endInit)
             await promisify(setTimeout)(50);
         this.ws.send(JSON.stringify({
             endExpose: true
         }));
-    },
+    }
     /**
      * AKA publish (the frontend is the subscriber)
      * @param {string} event Function name
@@ -89,49 +137,4 @@ const fwgui = {
     }
 };
 
-const serve = (dir, serverPort) => new Promise(resolve => {
-    app.use(express.static(dir));
-    app.use(express.static('node_modules/fwgui/frontend'));
-    app.ws('/', async (ws, rq) => {
-        fwgui.ws = ws;
-        ws.on('message', msg => {
-            try {
-                msg = JSON.parse(msg);
-                // console.log(msg);
-                if (msg.endInit) {
-                    fwgui.endInit = true;
-                    resolve();
-                }
-                else if (msg.expose) {
-                    fwgui[msg.func] = async (...args) => {
-                        let fid = `${Date.now().toString(16)}${Math.random().toString(16)}`;
-                        console.log(fid);
-                        ws.send(JSON.stringify({ func: msg.func, args, fid }));
-                        fwgui.waitingForReply[fid] = new fwgui.Waiting();
-                        while (fwgui.waitingForReply[fid] instanceof fwgui.Waiting)
-                            await promisify(setTimeout)(5);
-                        let rs = fwgui.waitingForReply[fid];
-                        delete fwgui.waitingForReply[fid];
-                        return rs;
-                    };
-                }
-                else if ('reply' in msg)
-                    fwgui.waitingForReply[msg.fid] = msg.reply;
-                else
-                    (async () => ws.send(JSON.stringify({
-                        reply: await (node_functions[msg.func])(...msg.args) || null,
-                        fid: msg.fid
-                    })))();
-            }
-            catch (e) {
-                node_functions.error('Serverside error: ' + e.stack);
-            }
-        });
-        ws.on('close', () => delete fwgui.ws);
-    });
-    let server = app.listen(serverPort);
-    process.addListener('exit', () => server.close() );
-    fwgui.expose(function error(...text) { console.log('\x1b[31m', ...text); });
-});
-
-module.exports = fwgui;
+module.exports = () => new FWGUI();

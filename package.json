@@ -1,6 +1,6 @@
 {
   "name": "fwgui",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "This library is a liteweight React Electron alternative, it's small and easy to use. It uses system installed Chromium as frontend engine, so the distribution won't take much disk space too.",
   "main": "index.js",
   "scripts": {
