@@ -82,7 +82,11 @@ class FWGUI {
         // setting up websocket server and running chrome
         const url = `http://localhost:${clientPort}/` + startPage;
         let success = false;
-        await chrome({ chromeFlags: [`--app=${url}`, '--window-size=1280,720'], chromePath: chromePath || undefined }).then(instance => {
+        await chrome({
+            chromeFlags: [`--app=${url}`, '--window-size=1280,720'],
+            chromePath: chromePath || undefined,
+            ignoreDefaultFlags: true
+        }).then(instance => {
             if (closeOnExit) {
                 process.addListener('exit', () => instance ? instance.kill() : null);
                 instance.process.addListener('exit', () => process.exit())

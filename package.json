@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/Foresteam/FWGUI#readme",
   "dependencies": {
-    "chrome-launcher": "^0.13.4",
-    "express": "^4.17.1",
-    "express-ws": "^4.0.0"
+    "chrome-launcher": "^0.15.0",
+    "express": "^4.17.3",
+    "express-ws": "^5.0.2"
   }
 }
