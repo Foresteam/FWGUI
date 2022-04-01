@@ -22,7 +22,7 @@ class FWGUI {
 
 	// initializer is now where it should be
 	static {
-		this.ws = new WebSocket('ws://localhost:8080');
+		this.ws = new WebSocket('ws://localhost:8889');
 		this.ws.connected = false;
 		this.ws.onopen = () => {
 			this.ws.connected = true;

@@ -1,10 +1,12 @@
 {
   "name": "fwgui",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "This library is a liteweight React Electron alternative, it's small and easy to use. It uses system installed Chromium as frontend engine, so the distribution won't take much disk space too.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"prepublish": "tsc"
   },
   "repository": {
     "type": "git",

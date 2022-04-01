@@ -90,7 +90,7 @@ class FWGUI {
 
     constructor() {}
 
-    async start({ startPage = '', webdir = 'wgui', closeOnExit = true, serverPort = 8080, clientPort, chromiumPath }: StartParams): Promise<boolean | LaunchedChrome> {
+    async start({ startPage = '', webdir = 'wgui', closeOnExit = true, serverPort = 8889, clientPort, chromiumPath }: StartParams): Promise<boolean | LaunchedChrome> {
         if (!webdir)
             return false;
         if (!clientPort)
