@@ -2,7 +2,7 @@ import { launch as chrome, LaunchedChrome } from 'chrome-launcher';
 
 import express from 'express';
 import { promisify } from 'util';
-import expressWs, { WebsocketRequestHandler } from 'express-ws';
+import expressWs from 'express-ws';
 import WS from 'ws';
 
 const app = expressWs(express()).app;
