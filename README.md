@@ -1,7 +1,18 @@
 # FWGUI
+[Source of inspiration (Python "version")](https://github.com/ChrisKnott/Eel)
+
 This library is a liteweight React Electron cross-platform alternative, small and easy to use. It uses system installed Chromium as frontend engine, so the distribution won't take much disk space (while Electron's will). You can pack it with [nexe](https://github.com/nexe/nexe) or whatever ([F0Talk](https://github.com/foresteam/F0Talk) is an example).
 
-[Python "version" of this library](https://github.com/ChrisKnott/Eel)
+Unlike its "older brother", the library just starts a Chromium instance with your web page opened, and provides message excanging with the frontend through JS functions, that are exposed from server to client and vice versa. Like:
+
+Instead of
+```javascript
+FWGUI.send('anAction', ['data'])
+```
+We can just use
+```javascript
+FWGUI.anAction(['data'])
+```
 
 **My project in which i used this library as GUI frontend: [F0Talk](https://github.com/foresteam/F0Talk)**
 ## Installation

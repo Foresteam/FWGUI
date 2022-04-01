@@ -13,6 +13,7 @@ const node_functions: {
 	error?: (...text: any[]) => void;
 } = {};
 
+/** Used to exchange with the frontend */
 interface Message {
 	reply?: any;
 	fid?: string;
@@ -156,4 +157,5 @@ class FWGUI {
         }));
     }
 }
-export default () => new FWGUI();
+
+export default new FWGUI();

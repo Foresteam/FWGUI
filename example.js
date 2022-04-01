@@ -1,5 +1,4 @@
 const fwgui = require('fwgui')();
-const path = require('path');
 const RELEASE = true;
 
 const SVLog = text => console.log(`Log: ${text}`);
