@@ -28,7 +28,7 @@ or
 npm i fwgui
 ```
 ## Example
-### Server
+### index.js
 ```js
 const FWGUI = require('fwgui');
 const RELEASE = true;
@@ -48,7 +48,7 @@ const SVLog = text => console.log(`Log: ${text}`);
     FWGUI.Alert('Message!');
 })();
 ```
-### Client
+### wgui/index.html
 ```html
 <!DOCTYPE html>
 <html lang="en">
