@@ -1,17 +1,17 @@
-const fwgui = require('fwgui')();
+const FWGUI = require('fwgui');
 const RELEASE = true;
 
 const SVLog = text => console.log(`Log: ${text}`);
 
 (async () => {
-    if (!await fwgui.start({
+    if (!await FWGUI.start({
         webdir: 'wgui',
-        serverPort: 8080,
-        clientPort: RELEASE ? 8080 : 8000,
+        serverPort: 8889,
+        clientPort: RELEASE ? 8889 : 8080,
     }))
         console.log('Failed to open GUI');
-    await fwgui.expose(SVLog);
-    await fwgui.endExpose();
-    fwgui.emit('time to print', 'text');
-    fwgui.Alert('Message!');
+    await FWGUI.expose(SVLog);
+    await FWGUI.endExpose();
+    FWGUI.emit('time to print', 'text');
+    FWGUI.Alert('Message!');
 })();
