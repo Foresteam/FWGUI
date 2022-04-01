@@ -70,7 +70,7 @@ const SVLog = text => console.log(`Log: ${text}`);
 </html>
 ```
 * *Don't forget to include the clientside script **fwgui_cl.js** in your HTML file.*
-* When using separate frontend server, the clientside lib (node_modules/fwgui/frontend/fwgui_cl.js) is be basically unavaliable. Solutions:
+* When using separate frontend server, the clientside lib (node_modules/fwgui/frontend/fwgui_cl.js) is basically unavaliable. Solutions:
     1. Put the file directly in your HTML folder
     2. Create a symlink
     3. Enter full path to the script (host + port)
