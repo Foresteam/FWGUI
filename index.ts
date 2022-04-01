@@ -39,21 +39,21 @@ class FWGUI {
     static #Waiting = class Waiting {};
 
     #waitingForReply: { [index: string]: any } = {};
-	ws: WS;
-	endInit: boolean;
+	#ws?: WS;
+	#endInit?: boolean;
 
     #serve(dir: string, serverPort: number) {
         return new Promise<void>(resolve => {
             app.use(express.static(dir));
             app.use(express.static('node_modules/fwgui/frontend'));
             app.ws('/', async ws => {
-                this.ws = ws;
+                this.#ws = ws;
                 ws.on('message', (_msg: any) => {
                     try {
                         const msg: Message = JSON.parse(_msg);
                         // console.log(msg);
                         if (msg.endInit) {
-                            this.endInit = true;
+                            this.#endInit = true;
                             resolve();
                         }
                         else if (msg.expose) {
@@ -81,7 +81,7 @@ class FWGUI {
                         node_functions.error('Serverside error: ' + e.stack);
                     }
                 });
-                ws.on('close', () => delete this.ws);
+                ws.on('close', () => this.#ws = null);
             });
             let server = app.listen(serverPort);
             process.addListener('exit', () => server.close());
@@ -128,18 +128,18 @@ class FWGUI {
             funcname = (funcname as CallableFunction).name;
         }
         node_functions[funcname as string] = func;
-        while (!this.ws)
+        while (!this.#ws)
             await promisify(setTimeout)(50);
-        this.ws.send(JSON.stringify(<Message>{
+        this.#ws.send(JSON.stringify(<Message>{
             func: funcname,
             expose: true
         }));
     }
     /** Tell the frontend that all functions are defined */
     async endExpose() {
-        while (!this.ws || !this.endInit)
+        while (!this.#ws || !this.#endInit)
             await promisify(setTimeout)(50);
-        this.ws.send(JSON.stringify(<Message>{
+        this.#ws.send(JSON.stringify(<Message>{
             endExpose: true
         }));
     }
@@ -149,9 +149,9 @@ class FWGUI {
      * @param args The arguments
      */
     async emit(event: string, ...args: any[]) {
-        if (!this.ws)
+        if (!this.#ws)
             return;
-		this.ws.send(JSON.stringify(<Message>{
+		this.#ws.send(JSON.stringify(<Message>{
             event,
             args
         }));
