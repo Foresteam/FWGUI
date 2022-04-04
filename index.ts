@@ -51,7 +51,6 @@ class FWGUI {
                 ws.on('message', (_msg: any) => {
                     try {
                         const msg: Message = JSON.parse(_msg);
-                        // console.log(msg);
                         if (msg.endInit) {
                             this.#endInit = true;
                             resolve();
@@ -59,7 +58,6 @@ class FWGUI {
                         else if (msg.expose) {
                             this[msg.func] = async (...args: any[]) => {
                                 let fid = `${Date.now().toString(16)}${Math.random().toString(16)}`;
-                                console.log(fid);
 								ws.send(JSON.stringify(<Message>{ func: msg.func, args, fid }));
                                 this.#waitingForReply[fid] = new FWGUI.#Waiting();
                                 while (this.#waitingForReply[fid] instanceof FWGUI.#Waiting)

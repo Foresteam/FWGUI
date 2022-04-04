@@ -12,7 +12,6 @@ class FWGUI {
 		let fid = `${Date.now().toString(16)}${Math.random().toString(16)}`;
 		this.ws.send(JSON.stringify({ func, args, fid }));
 		this.#waitingForReply[fid] = new FWGUI.#Waiting();
-		// FWGUI.whoIsGay().then(console.log)
 		while (this.#waitingForReply[fid] instanceof FWGUI.#Waiting)
 			await new Promise(resolve => setTimeout(resolve, 10));
 		let rs = this.#waitingForReply[fid];
@@ -33,7 +32,6 @@ class FWGUI {
 		this.ws.onmessage = async ({ data: msg }) => {
 			try {
 				msg = JSON.parse(msg);
-				console.log(msg);
 				let f = this.#exposed[msg.func];
 				if (msg.expose)
 					return this.#resolve(msg.func);
